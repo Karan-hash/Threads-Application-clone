@@ -35,7 +35,7 @@ const UserHeader = () => {
               p={1}
               borderRadius={"full"}
             >
-              threads.net
+              CEO
             </Text>
           </Flex>
         </Box>
