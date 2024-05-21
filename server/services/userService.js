@@ -67,7 +67,7 @@ const loginUserService = async (username, password) => {
       profilePic: user.profilePic,
     };
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error(error.message || "Internal server error");
   }
 };
 const logoutUserService = async () => {
