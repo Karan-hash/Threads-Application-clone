@@ -6,7 +6,7 @@ import {
   logoutUserService,
   followUnFollowUserService,
   updateUserService,
-  getUserProfileService
+  getUserProfileService,
 } from "../services/userService.js";
 // import User from '../models/userModel.js';
 
@@ -34,23 +34,38 @@ const signupUser = async (req, res) => {
     }
   } catch (error) {
     console.error("Error signing up user:", error);
-    res
-      .status(error.status || 500)
-      .json({ error: error.message || "Internal server error" });
+    const statusCode =
+      error.message ===
+      "Failed to sign up user: User already exists in database"
+        ? 409
+        : 500;
+    res.status(statusCode).json({ error: error.message });
   }
 };
 
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+
     const userData = await loginUserService(username, password);
     if (userData) {
       generateTokenAndSetCookie(userData._id, res);
       res.status(200).json(userData);
     }
   } catch (error) {
+    let statusCode;
+    switch (error.message) {
+      case "Invalid username or password":
+        statusCode = 400;
+        break;
+      case "Internal server error":
+        statusCode = 500;
+        break;
+      default:
+        statusCode = 500;
+    }
     console.error("Error in loginUser: ", error.message);
-    res.status(500).json({ error: error.message });
+    res.status(statusCode).json({ error: error.message });
   }
 };
 const logoutUser = async (req, res) => {
@@ -73,13 +88,19 @@ const followUnFollowUser = async (req, res) => {
     res.status(200).json({ message: resultMessage });
   } catch (error) {
     console.error("Error in follow and unfollow user: ", error.message);
-    res.status(500).json({ error: error.message });
+    const statusCode =
+      error.message === "You cannot follow/unfollow yourself" ||
+      error.message === "User not found"
+        ? 400
+        : 500;
+    res.status(statusCode).json({ error: error.message });
   }
 };
 const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await updateUserService(req.user._id, { id }, req.body);
+    if (!user) return res.status(400).json({ error: "User not found" });
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.error("Error in updateUser: ", error.message);
@@ -95,6 +116,7 @@ const getUserProfile = async (req, res) => {
 
   try {
     const user = await getUserProfileService(query);
+    if (!user) return res.status(404).json({ error: "User not found" });
     res
       .status(200)
       .json({ message: "User profile fetched successfully", user });
