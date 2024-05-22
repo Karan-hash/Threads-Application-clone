@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 const signupUserService = async (userData) => {
   const { name, email, username, password } = userData;
 
@@ -115,38 +116,63 @@ const followUnFollowUserService = async (userId, currentUserId) => {
     throw new Error(error.message);
   }
 };
-const updateUserService = async (userId, params, body) => {
-  try {
-    const { name, email, username, password, bio, profilePic } = body;
+// const updateUserService = async (userId, params, body) => {
+//   try {
+// 		const { name, email, username, password, bio } = body;
+// 		let { profilePic } = body;
 
-    let user = await User.findById(userId);
-    if (!user) {
-      throw new Error("User not found");
-    }
+// 		let user = await User.findById(userId);
+// 		if (!user) {
+// 			throw new Error("User not found");
+// 		}
 
-    if (params.id !== userId.toString()) {
-      throw new Error("You cannot update other user's profile");
-    }
+// 		if (params.id !== userId.toString()) {
+// 			throw new Error("You cannot update other user's profile");
+// 		}
 
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user.password = hashedPassword;
-    }
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.username = username || user.username;
-    user.bio = bio || user.bio;
+// 		if (password) {
+// 			const salt = await bcrypt.genSalt(10);
+// 			const hashedPassword = await bcrypt.hash(password, salt);
+// 			user.password = hashedPassword;
+// 		}
 
-    user = await user.save();
-    // password should be null in response
-    user.password = null;
+// 		if (profilePic) {
+// 			if (user.profilePic) {
+// 				await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+// 			}
 
-    return user;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
+// 			const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+// 			profilePic = uploadedResponse.secure_url;
+// 		}
+
+// 		user.name = name || user.name;
+// 		user.email = email || user.email;
+// 		user.username = username || user.username;
+// 		user.profilePic = profilePic || user.profilePic;
+// 		user.bio = bio || user.bio;
+
+// 		user = await user.save();
+
+// 		// // Find all posts that this user replied and update username and userProfilePic fields
+// 		// await Post.updateMany(
+// 		// 	{ "replies.userId": userId },
+// 		// 	{
+// 		// 		$set: {
+// 		// 			"replies.$[reply].username": user.username,
+// 		// 			"replies.$[reply].userProfilePic": user.profilePic,
+// 		// 		},
+// 		// 	},
+// 		// 	{ arrayFilters: [{ "reply.userId": userId }] }
+// 		// );
+
+// 		// password should be null in response
+// 		user.password = null;
+
+// 		return user;
+// 	} catch (error) {
+// 		throw new Error(error.message);
+// 	}
+// };
 
 const getUserProfileService = async (query) => {
   try {
@@ -178,6 +204,6 @@ export {
   loginUserService,
   logoutUserService,
   followUnFollowUserService,
-  updateUserService,
+  // updateUserService,
   getUserProfileService,
 };
