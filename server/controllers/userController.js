@@ -5,9 +5,10 @@ import {
   loginUserService,
   logoutUserService,
   followUnFollowUserService,
-  updateUserService,
+  // updateUserService,
   getUserProfileService,
 } from "../services/userService.js";
+import User from "../models/userModel.js";
 // import User from '../models/userModel.js';
 
 const signupUser = async (req, res) => {
@@ -96,17 +97,84 @@ const followUnFollowUser = async (req, res) => {
     res.status(statusCode).json({ error: error.message });
   }
 };
+
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const user = await updateUserService(req.user._id, { id }, req.body);
-    if (!user) return res.status(400).json({ error: "User not found" });
-    res.status(200).json({ message: "Profile updated successfully", user });
-  } catch (error) {
-    console.error("Error in updateUser: ", error.message);
-    res.status(500).json({ error: error.message });
-  }
+	const { name, email, username, password, bio } = req.body;
+	let { profilePic } = req.body;
+
+	const userId = req.user._id;
+	try {
+		let user = await User.findById(userId);
+		if (!user) return res.status(400).json({ error: "User not found" });
+
+		if (req.params.id !== userId.toString())
+			return res.status(400).json({ error: "You cannot update other user's profile" });
+
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			const hashedPassword = await bcrypt.hash(password, salt);
+			user.password = hashedPassword;
+		}
+
+		if (profilePic) {
+			if (user.profilePic) {
+				await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+			}
+
+			const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+			profilePic = uploadedResponse.secure_url;
+		}
+
+		user.name = name || user.name;
+		user.email = email || user.email;
+		user.username = username || user.username;
+		user.profilePic = profilePic || user.profilePic;
+		user.bio = bio || user.bio;
+
+		user = await user.save();
+
+		// // Find all posts that this user replied and update username and userProfilePic fields
+		// await Post.updateMany(
+		// 	{ "replies.userId": userId },
+		// 	{
+		// 		$set: {
+		// 			"replies.$[reply].username": user.username,
+		// 			"replies.$[reply].userProfilePic": user.profilePic,
+		// 		},
+		// 	},
+		// 	{ arrayFilters: [{ "reply.userId": userId }] }
+		// );
+
+		// password should be null in response
+		user.password = null;
+
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+		console.log("Error in updateUser: ", err.message);
+	}
 };
+// const updateUser = async (req, res) => {
+//   // const { id } = req.params;
+//   // console.log("Update call : ", req.user._id, req.params);
+//   // try {
+//   //   const user = await updateUserService(req.user._id, req.params, req.body); // Pass id directly instead of { id }
+//   //   if (!user) return res.status(400).json({ error: "User not found" });
+//   //   res.status(200).json({ message: "Profile updated successfully", user });
+//   // } catch (error) {
+//   //   console.error("Error in updateUser: ", error.message);
+//   //   res.status(500).json({ error: error.message });
+//   // }
+//   const { id } = req.params;
+// 	try {
+// 		const user = await updateUserService(req.user._id, { id }, req.body);
+//     if (!user) return res.status(400).json({ error: "User not found" });
+// 		res.status(200).json({ message: "Profile updated successfully", user });
+// 	} catch (error) {
+//     console.error("Error in updateUser: ", error.message);
+// 		res.status(500).json({ error: error.message });
+// 	}
+// };
 
 // To test this api = http://localhost:5000/api/users/profile/karan_kaushal123
 const getUserProfile = async (req, res) => {
