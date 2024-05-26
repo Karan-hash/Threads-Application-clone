@@ -2,6 +2,7 @@ import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 const createPostService = async (postData, userId) => {
   const { postedBy, text, img } = postData;
 
@@ -24,16 +25,16 @@ const createPostService = async (postData, userId) => {
       throw new Error(`Text must be less than ${maxLength} characters`);
     }
 
-    // let imgUrl = "";
-    // if (img) {
-    //     const uploadedResponse = await cloudinary.uploader.upload(img);
-    //     imgUrl = uploadedResponse.secure_url;
-    // }
+    let imgUrl = "";
+    if (img) {
+        const uploadedResponse = await cloudinary.uploader.upload(img);
+        imgUrl = uploadedResponse.secure_url;
+    }
 
     const newPost = new Post({
       postedBy,
       text,
-      // img: imgUrl
+      img: imgUrl
     });
     await newPost.save();
 
@@ -61,10 +62,10 @@ const deletePostService = async (postId, userId) => {
       throw new Error("Unauthorized to delete post");
     }
 
-    // if (post.img) {
-    //   const imgId = post.img.split("/").pop().split(".")[0];
-    //   await cloudinary.uploader.destroy(imgId);
-    // }
+    if (post.img) {
+      const imgId = post.img.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(imgId);
+    }
 
     await Post.findByIdAndDelete(postId);
 
@@ -143,6 +144,15 @@ const getFeedPostsService = async (userId) => {
     throw new Error(error.message);
   }
 };
+const getUserPostsService = async (username) => {
+  const user = await User.findOne({ username });
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 });
+  return posts;
+};
 export {
   createPostService,
   getPostByIdService,
@@ -150,4 +160,5 @@ export {
   likeUnlikePostService,
   replyToPostService,
   getFeedPostsService,
+  getUserPostsService
 };

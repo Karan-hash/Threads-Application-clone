@@ -7,6 +7,7 @@ import {
   likeUnlikePostService,
   replyToPostService,
   getFeedPostsService,
+  getUserPostsService
 } from "../services/postService.js";
 const createPost = async (req, res) => {
   const { body, user } = req;
@@ -25,7 +26,7 @@ const createPost = async (req, res) => {
       statusCode = 400;
     }
     res.status(statusCode).json({ error: error.message });
-    console.log("Error in createPostController:", error.message);
+    console.log("Error in createPostController:", error);
   }
 };
 const getPostById = async (req, res) => {
@@ -108,6 +109,19 @@ const getFeedPosts = async (req, res) => {
     res.status(statusCode).json({ error: error.message });
   }
 };
+const getUserPosts = async(req, res) => {
+  const { username } = req.params;
+  try {
+    const posts = await getUserPostsService(username);
+    res.status(200).json(posts);
+  } catch (error) {
+    if (error.message === 'User not found') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+}
 export {
   createPost,
   getPostById,
@@ -115,4 +129,5 @@ export {
   likeUnlikePost,
   replyToPost,
   getFeedPosts,
+  getUserPosts
 };
