@@ -7,7 +7,8 @@ import {
   likeUnlikePostService,
   replyToPostService,
   getFeedPostsService,
-  getUserPostsService
+  getUserPostsService,
+  repostService
 } from "../services/postService.js";
 const createPost = async (req, res) => {
   const { body, user } = req;
@@ -122,6 +123,18 @@ const getUserPosts = async(req, res) => {
     }
   }
 }
+const repostPost = async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming you have middleware to set req.user
+    const { postId } = req.params;
+
+    const repostedPost = await repostService(userId, postId);
+
+    res.status(201).json(repostedPost);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 export {
   createPost,
   getPostById,
@@ -129,5 +142,6 @@ export {
   likeUnlikePost,
   replyToPost,
   getFeedPosts,
-  getUserPosts
+  getUserPosts,
+  repostPost
 };

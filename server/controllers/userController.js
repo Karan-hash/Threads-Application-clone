@@ -7,6 +7,8 @@ import {
   followUnFollowUserService,
   // updateUserService,
   getUserProfileService,
+  getSuggestedUsersService,
+  freezeUserAccountService
 } from "../services/userService.js";
 import User from "../models/userModel.js";
 // import User from '../models/userModel.js';
@@ -194,6 +196,32 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getSuggestedUsers = async(req, res) => {
+  try {
+		const userId = req.user._id;
+		const suggestedUsers = await getSuggestedUsersService(userId);
+
+		res.status(200).json(suggestedUsers);
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+}
+export const freezeAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const result = await freezeUserAccountService(userId);
+
+    res.status(200).json(result);
+  } catch (error) {
+    if (error.message === 'User not found') {
+      res.status(404).json({ error: error.message });
+    } else if (error.message === 'Account is already frozen') {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+};
 export {
   signupUser,
   loginUser,
@@ -201,4 +229,5 @@ export {
   followUnFollowUser,
   updateUser,
   getUserProfile,
+  getSuggestedUsers
 };

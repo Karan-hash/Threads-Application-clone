@@ -199,6 +199,52 @@ const getUserProfileService = async (query) => {
     throw new Error(error.message);
   }
 };
+
+const getSuggestedUsersService = async (userId) => {
+	try {
+		// Fetch the list of users followed by the current user
+		const user = await User.findById(userId).select('following');
+
+		// Get a random sample of users excluding the current user
+		const users = await User.aggregate([
+			{ $match: { _id: { $ne: userId } } },
+			{ $sample: { size: 10 } },
+		]);
+
+		// Filter out users already followed by the current user
+		const filteredUsers = users.filter(user => !user.following.includes(user._id));
+
+		// Select up to 4 suggested users
+		const suggestedUsers = filteredUsers.slice(0, 4);
+
+		// Remove password fields from the suggested users
+		suggestedUsers.forEach(user => user.password = undefined);
+
+		return suggestedUsers;
+	} catch (error) {
+		throw new Error('Error fetching suggested users: ' + error.message);
+	}
+};
+const freezeUserAccountService = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user.isFrozen) {
+      throw new Error('Account is already frozen');
+    }
+
+    user.isFrozen = true;
+    await user.save();
+
+    return { success: true, message: 'Account has been frozen' };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 export {
   signupUserService,
   loginUserService,
@@ -206,4 +252,6 @@ export {
   followUnFollowUserService,
   // updateUserService,
   getUserProfileService,
+  getSuggestedUsersService,
+  freezeUserAccountService
 };
