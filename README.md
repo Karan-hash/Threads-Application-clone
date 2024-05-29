@@ -1,29 +1,30 @@
-# Welcome to the Threads Clone Application! 
-This project is a feature-rich clone of the popular Threads platform, designed to provide a seamless social networking experience. It includes various functionalities such as thread creation, chat, follow/unfollow, notifications, and account management.
+# Threads Clone Application
 
-# Features
-Thread Management
+Welcome to the Threads Clone Application! This project is a feature-rich clone of the popular Threads platform, designed to provide a seamless social networking experience. It includes various functionalities such as thread creation, chat, follow/unfollow, notifications, and account management.
 
-Create a thread.
-Reply to a thread.
-Like a thread.
-User Interaction
+## Features
 
-Follow and unfollow users.
-Chat with other users in real-time.
-Notifications
+- **Thread Management**
+  - Create a thread
+  - Reply to a thread
+  - Like a thread
 
-Notification sound for real-time updates.
-Seen and unseen message functionality.
-Media Support
+- **User Interaction**
+  - Follow and unfollow users
+  - Chat with other users in real-time
 
-Image support via Cloudinary for uploading and displaying images.
-Account Management
+- **Notifications**
+  - Notification sound for real-time updates
+  - Seen and unseen message functionality
 
-Freeze and unfreeze user accounts.
-Authentication
+- **Media Support**
+  - Image support via Cloudinary for uploading and displaying images
 
-Secure JWT token-based authentication.
-Real-time Communication
+- **Account Management**
+  - Freeze and unfreeze user accounts
 
-Real-time chat functionality using Socket.IO.
+- **Authentication**
+  - Secure JWT token-based authentication
+
+- **Real-time Communication**
+  - Real-time chat functionality using Socket.IO
