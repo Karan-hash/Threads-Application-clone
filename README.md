@@ -1,4 +1,5 @@
-# Welcome to the Threads Clone Application! This project is a feature-rich clone of the popular Threads platform, designed to provide a seamless social networking experience. It includes various functionalities such as thread creation, chat, follow/unfollow, notifications, and account management.
+# Welcome to the Threads Clone Application! 
+This project is a feature-rich clone of the popular Threads platform, designed to provide a seamless social networking experience. It includes various functionalities such as thread creation, chat, follow/unfollow, notifications, and account management.
 
 Features
 Thread Management
