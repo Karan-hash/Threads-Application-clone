@@ -5,7 +5,6 @@ import { useRecoilValue } from "recoil";
 
 const useFollowUnfollow = (user) => {
 	const currentUser = useRecoilValue(userAtom);
-    console.log("Current login User : ", currentUser);
 	const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
 	const [updating, setUpdating] = useState(false);
 	const showToast = useShowToast();
@@ -40,7 +39,6 @@ const useFollowUnfollow = (user) => {
 			}
 			setFollowing(!following);
 
-			console.log(data);
 		} catch (error) {
 			showToast("Error coming from use Follow unfollow hook", error, "error");
 		} finally {

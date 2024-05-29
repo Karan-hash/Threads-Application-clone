@@ -26,7 +26,6 @@ export default function UpdateProfilePage() {
 		bio: user.bio,
 		password: "",
 	});
-    console.log("user is here: ", user);
 	const fileRef = useRef(null);
 	const [updating, setUpdating] = useState(false);
 
@@ -50,7 +49,6 @@ export default function UpdateProfilePage() {
 				body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
 			});
 			const data = await res.json(); // updated user object
-            console.log("data is : ", data);
 			if (data.error) {
 				showToast("Error", data.error, "error");
 				return;

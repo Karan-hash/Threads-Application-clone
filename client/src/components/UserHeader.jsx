@@ -16,7 +16,6 @@ const UserHeader = ({ user }) => {
 	const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user.user);
 
   let userObj = user.user;
-  console.log("Current User is : ", user);
 	const copyURL = () => {
 		const currentURL = window.location.href;
 		navigator.clipboard.writeText(currentURL).then(() => {

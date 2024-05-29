@@ -13,7 +13,6 @@ export const SocketContextProvider = ({ children }) => {
 	const [socket, setSocket] = useState(null);
 	const [onlineUsers, setOnlineUsers] = useState([]);
 	const user = useRecoilValue(userAtom);
-	console.log("The user is : ", user);
 	useEffect(() => {
 		const socket = io("http://localhost:5000", {
 			query: {
@@ -28,7 +27,6 @@ export const SocketContextProvider = ({ children }) => {
 		});
 		return () => socket && socket.close();
 	}, [user?._id]);
-	console.log("The online users are : ", onlineUsers);
 
 	return <SocketContext.Provider value={{ socket, onlineUsers }}>{children}</SocketContext.Provider>;
 };

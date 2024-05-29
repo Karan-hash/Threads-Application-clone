@@ -17,7 +17,6 @@ const MessageContainer = () => {
 	const { socket } = useSocket();
 	const setConversations = useSetRecoilState(conversationsAtom);
 	const messageEndRef = useRef(null);
-	console.log("The messages in the message container is : ", messages, socket);
 	useEffect(() => {
 		socket.on("newMessage", (message) => {
 			if (selectedConversation._id === message.conversationId) {
@@ -80,7 +79,6 @@ const MessageContainer = () => {
 	useEffect(() => {
 		messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages]);
-
 	useEffect(() => {
 		const getMessages = async () => {
 			setLoadingMessages(true);

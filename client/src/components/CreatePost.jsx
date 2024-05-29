@@ -57,7 +57,6 @@ const CreatePost = () => {
 	const handleCreatePost = async () => {
 		setLoading(true);
 		try {
-            console.log("The handle create post data is : ", user, imgUrl, postText);
 			const res = await fetch("/api/posts/createPost", {
 				method: "POST",
 				headers: {
@@ -72,7 +71,6 @@ const CreatePost = () => {
 				return;
 			}
 			showToast("Success", "Post created successfully", "success");
-            console.log("The data username is : ", data, username, user);
 			if (username === user.username) {
 				setPosts([data, ...posts]);
 			}

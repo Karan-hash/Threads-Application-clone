@@ -20,10 +20,8 @@ const UserPage = () => {
 			if (!user) return;
 			setFetchingPosts(true);
 			try {
-        console.log("The user page user is : ", user);
 				const res = await fetch(`/api/posts/user/${user.user.username}`);
 				const data = await res.json();
-				console.log("User page Data is : ", data);
 				setPosts(data);
 			} catch (error) {
 				showToast("Error coming from posts", error.message, "error");
@@ -35,7 +33,6 @@ const UserPage = () => {
 
 		getPosts();
 	}, [username, showToast, setPosts, user]);
-  console.log("The Posts are here and recoil state: ", posts);
 	if (!user && loading) {
 		return (
 			<Flex justifyContent={"center"}>

@@ -27,7 +27,6 @@ const Post = ({ post, postedBy }) => {
 					showToast("Error", data.error, "error");
 					return;
 				}
-				console.log("The user data is : ", data);
 				setUser(data.user);
 			} catch (error) {
 				showToast("Error", error.message, "error");
@@ -59,8 +58,6 @@ const Post = ({ post, postedBy }) => {
 	};
 
 	if (!user) return null;
-	console.log("The user in the post is  : ", user, user.username, user._id);
-	console.log("The post replies is  : ", post);
 	return (
 		<Link to={`/${user.username}/post/${post._id}`}>
 			<Flex gap={3} mb={4} py={5}>

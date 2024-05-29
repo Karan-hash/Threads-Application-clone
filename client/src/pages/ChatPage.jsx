@@ -19,7 +19,6 @@ const ChatPage = () => {
 	const currentUser = useRecoilValue(userAtom);
 	const showToast = useShowToast();
 	const { socket, onlineUsers } = useSocket();
-	console.log("The online users in the chat page are : ", onlineUsers);
 	useEffect(() => {
 		socket?.on("messagesSeen", ({ conversationId }) => {
 			setConversations((prev) => {
@@ -49,7 +48,6 @@ const ChatPage = () => {
 					showToast("Error", data.error, "error");
 					return;
 				}
-				console.log(data);
 				setConversations(data);
 			} catch (error) {
 				showToast("Error", error.message, "error");

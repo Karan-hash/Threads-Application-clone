@@ -36,7 +36,6 @@ export default function SignupCard() {
 
 	const handleSignup = async () => {
 		try {
-            console.log(inputs);
 			const res = await fetch("/api/users/signup", {
 				method: "POST",
 				headers: {

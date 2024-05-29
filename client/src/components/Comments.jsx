@@ -1,8 +1,6 @@
 import { Avatar, Divider, Flex, Text } from "@chakra-ui/react";
 
 const Comment = ({ reply, lastReply }) => {
-    console.log("In the comment section reply: ", reply);
-    console.log("In the comment section lastreply: ", lastReply);
 	return (
 		<>
 			<Flex gap={4} py={2} my={2} w={"full"}>
