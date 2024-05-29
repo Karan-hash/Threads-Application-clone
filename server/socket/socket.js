@@ -33,6 +33,10 @@ io.on('connection', (socket) => {
 		}
     });
 
+	socket.on('newPost', (post) => {
+		socket.broadcast.emit('newPost', post);
+	  });
+
     socket.on("disconnect", () => {
 		console.log("user disconnected");
         delete userSocketMap[userId];

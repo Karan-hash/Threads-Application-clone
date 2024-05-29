@@ -153,6 +153,28 @@ const getUserPostsService = async (username) => {
   const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 });
   return posts;
 };
+const repostService = async (userId, originalPostId) => {
+  try {
+    // Ensure the original post exists
+    const originalPost = await Post.findById(originalPostId);
+    if (!originalPost) {
+      throw new Error('Original post not found');
+    }
+
+    // Create the repost
+    const newPost = new Post({
+      text: originalPost.text, // You can modify this if you want to add "Reposted: " or similar
+      postedBy: userId,
+      repost: originalPostId,
+    });
+
+    await newPost.save();
+
+    return newPost;
+  } catch (error) {
+    throw new Error('Error reposting: ' + error.message);
+  }
+};
 export {
   createPostService,
   getPostByIdService,
@@ -160,5 +182,6 @@ export {
   likeUnlikePostService,
   replyToPostService,
   getFeedPostsService,
-  getUserPostsService
+  getUserPostsService,
+  repostService
 };

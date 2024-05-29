@@ -37,6 +37,7 @@ const postSchema = mongoose.Schema({
             },
         },
     ],
+    repost: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: null }, // Reference to the original post if this is a repost
 }, {
     timestamps: true,
 }
