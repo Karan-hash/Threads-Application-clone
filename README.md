@@ -14,7 +14,7 @@ Welcome to the Threads Clone Application! This project is a feature-rich clone o
   - Chat with other users in real-time
 
 - **Notifications**
-  - Notification sound for real-time updates
+  - Notification sound for real-time messages
   - Seen and unseen message functionality
 
 - **Media Support**
