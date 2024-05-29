@@ -21,7 +21,6 @@ const Conversation = ({ conversation, isOnline }) => {
 	const lastMessage = conversation.lastMessage;
 	const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
 	const colorMode = useColorMode();
-
 	return (
 		<Flex
 			gap={4}
