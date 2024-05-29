@@ -19,6 +19,7 @@ const ChatPage = () => {
 	const currentUser = useRecoilValue(userAtom);
 	const showToast = useShowToast();
 	const { socket, onlineUsers } = useSocket();
+
 	useEffect(() => {
 		socket?.on("messagesSeen", ({ conversationId }) => {
 			setConversations((prev) => {
@@ -48,6 +49,7 @@ const ChatPage = () => {
 					showToast("Error", data.error, "error");
 					return;
 				}
+				console.log(data);
 				setConversations(data);
 			} catch (error) {
 				showToast("Error", error.message, "error");
@@ -65,27 +67,28 @@ const ChatPage = () => {
 		try {
 			const res = await fetch(`/api/users/profile/${searchText}`);
 			const searchedUser = await res.json();
+			console.log("The searched user is : ", searchedUser);
 			if (searchedUser.error) {
 				showToast("Error", searchedUser.error, "error");
 				return;
 			}
 
-			const messagingYourself = searchedUser._id === currentUser._id;
+			const messagingYourself = searchedUser.user._id === currentUser._id;
 			if (messagingYourself) {
 				showToast("Error", "You cannot message yourself", "error");
 				return;
 			}
 
 			const conversationAlreadyExists = conversations.find(
-				(conversation) => conversation.participants[0]._id === searchedUser._id
+				(conversation) => conversation.participants[0]._id === searchedUser.user._id
 			);
 
 			if (conversationAlreadyExists) {
 				setSelectedConversation({
 					_id: conversationAlreadyExists._id,
-					userId: searchedUser._id,
-					username: searchedUser.username,
-					userProfilePic: searchedUser.profilePic,
+					userId: searchedUser.user._id,
+					username: searchedUser.user.username,
+					userProfilePic: searchedUser.user.profilePic,
 				});
 				return;
 			}
@@ -99,9 +102,9 @@ const ChatPage = () => {
 				_id: Date.now(),
 				participants: [
 					{
-						_id: searchedUser._id,
-						username: searchedUser.username,
-						profilePic: searchedUser.profilePic,
+						_id: searchedUser.user._id,
+						username: searchedUser.user.username,
+						profilePic: searchedUser.user.profilePic,
 					},
 				],
 			};
